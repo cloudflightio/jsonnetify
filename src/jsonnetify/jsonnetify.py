@@ -1,6 +1,6 @@
 import argparse
 import sys
-from typing import Any, Optional, TextIO, Tuple, Union
+from typing import Optional, Tuple
 from urllib import request
 import _jsonnet
 import pathlib
@@ -12,16 +12,14 @@ from tempfile import TemporaryDirectory
 import os
 import logging
 
-def convert_manifest(
-    inputfile: str, outputfile: str, tempdir : Optional[str] = None
-):
+
+def convert_manifest(inputfile: str, outputfile: str, tempdir: Optional[str] = None):
     if not tempdir:
         tempdirobj = TemporaryDirectory("jsonnetify")
         tempdir = tempdirobj.name
 
     manifest_file_path = os.path.join(tempdir, "manifest.yaml")
     output_path = os.path.join(tempdir, "out")
-
 
     if inputfile.startswith(("http://", "https://")):
         request.urlretrieve(inputfile, manifest_file_path)
@@ -74,22 +72,41 @@ def convert_manifest(
             f.write(json_str)
 
 
-def cli(argv=None) -> Tuple[str,str,Optional[str]]:
-    parser = argparse.ArgumentParser(exit_on_error=True, prog="jsonnetify", description='Convert multi-doc kubernetes manifests into jsonnet')
-    parser.add_argument('-i','--ifile', help='Input (can be a url, path or "-" for stdin)', required=True, type=str)
-    parser.add_argument('-o','--ofile', help='Output (can be a path or "-" for stdout', required=True, type=str)
-    parser.add_argument('-t','--tmpdir', help='Temp directory path', required=False, type=str)
+def cli(argv=None) -> Tuple[str, str, Optional[str]]:
+    parser = argparse.ArgumentParser(
+        exit_on_error=True,
+        prog="jsonnetify",
+        description="Convert multi-doc kubernetes manifests into jsonnet",
+    )
+    parser.add_argument(
+        "-i",
+        "--ifile",
+        help='Input (can be a url, path or "-" for stdin)',
+        required=True,
+        type=str,
+    )
+    parser.add_argument(
+        "-o",
+        "--ofile",
+        help='Output (can be a path or "-" for stdout',
+        required=True,
+        type=str,
+    )
+    parser.add_argument(
+        "-t", "--tmpdir", help="Temp directory path", required=False, type=str
+    )
     args = vars(parser.parse_args(argv))
 
-    outputfile = args['ofile']  
-    inputfile = args['ifile']
+    outputfile = args["ofile"]
+    inputfile = args["ifile"]
     tempdir = args.get("tmpdir", None)
 
     return (inputfile, outputfile, tempdir)
 
+
 def main(argv=None):
     if not argv:
         argv = sys.argv[1:]
-    
+
     context = cli()
     convert_manifest(*context)
