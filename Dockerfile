@@ -1,17 +1,24 @@
-FROM alpine:edge
 
-RUN \
-    apk add --no-cache bash curl python3 py3-pip go musl-dev git && \
-    apk add kubectl --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing/ && \
-    python3 -m pip install --user pipx && \
-    python3 -m pipx ensurepath && \
-    python3 -m pipx install yaml2jsonnet && \
-    go install github.com/google/go-jsonnet/cmd/jsonnet@latest && \
-    go install github.com/patrickdappollonio/kubectl-slice@latest && \
-    mkdir /work
 
+FROM python:3.10-alpine
+
+ENV \
+  PYTHONFAULTHANDLER=1 \
+  PYTHONUNBUFFERED=1 \
+  PYTHONHASHSEED=random \
+  PIP_NO_CACHE_DIR=off \
+  PIP_DISABLE_PIP_VERSION_CHECK=on \
+  PIP_DEFAULT_TIMEOUT=100 \
+  POETRY_VERSION=1.1.15
+
+# Copy only requirements to cache them in docker layer
 WORKDIR /work
-COPY generate.sh /usr/local/bin/
+COPY poetry.lock pyproject.toml /work/
 
-ENV PATH="${PATH}:/root/go/bin:/root/.local/bin"
-ENTRYPOINT [ "generate.sh" ]
+# Project initialization:
+RUN pip install "poetry==$POETRY_VERSION" \
+  && poetry config virtualenvs.create false \
+  && poetry install $(test "$YOUR_ENV" == production && echo "--no-dev") --no-interaction --no-ansi
+
+COPY src/ /work/
+ENTRYPOINT [ "python", "-m", "jsonnetify" ]
