@@ -2,6 +2,7 @@
 
 ```bash
 touch manifest.libsonnet
+docker pull ghcr.io/cloudflightio/jsonnetify:main
 docker run --rm -it \
     -v $(pwd)/manifest.libsonnet:/work/manifest.libsonnet:z \
     ghcr.io/cloudflightio/jsonnetify:main \
