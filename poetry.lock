@@ -123,26 +123,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "jsonnet"
-version = "0.18.0"
-description = "Python bindings for Jsonnet - The data templating language"
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
-name = "kubesplit"
-version = "0.3.2"
-description = "Split multidoc yaml formatted kubernetes descriptors to a set         of single resource files"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-"ruamel.yaml" = ">=0.16.10"
-yamkix = ">=0.9.0"
-
-[[package]]
 name = "mccabe"
 version = "0.7.0"
 description = "McCabe checker, plugin for flake8"
@@ -266,18 +246,6 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
-name = "ruamel.yaml"
-version = "0.16.13"
-description = "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.extras]
-docs = ["ryd"]
-jinja2 = ["ruamel.yaml.jinja2 (>=0.2)"]
-
-[[package]]
 name = "toml"
 version = "0.10.2"
 description = "Python Library for Tom's Obvious, Minimal Language"
@@ -293,32 +261,10 @@ category = "dev"
 optional = false
 python-versions = ">=3.7"
 
-[[package]]
-name = "yamkix"
-version = "0.9.0"
-description = "An opinionated yaml formatter based on ruamel.yaml"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-"ruamel.yaml" = ">0.16"
-
-[[package]]
-name = "yaml2jsonnet"
-version = "1.0.1"
-description = "Convert from YAML to Jsonnet format, retaining comments"
-category = "main"
-optional = false
-python-versions = ">=3.8,<4.0"
-
-[package.dependencies]
-"ruamel.yaml" = ">=0.16.10,<0.17.0"
-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "794e7afccb5aacfb8a9fa1c48d48b76e99ee378aff9e9eaf9b8fb24df7454f3e"
+content-hash = "002ec72b756639e76e4476b912ba8be7c55fc4d3f40db29428b5ff40bd93f0c4"
 
 [metadata.files]
 atomicwrites = [
@@ -429,13 +375,6 @@ iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
-jsonnet = [
-    {file = "jsonnet-0.18.0.tar.gz", hash = "sha256:4ccd13427e9097b6b7d6d38f78f638a55ab8b452a257639e8e9af2178ec235d4"},
-]
-kubesplit = [
-    {file = "kubesplit-0.3.2-py2.py3-none-any.whl", hash = "sha256:3f2c451115396bc5a7455fde6a4239441b54950291750946760474fc5e6311e1"},
-    {file = "kubesplit-0.3.2.tar.gz", hash = "sha256:71d6962479b9f0e7cb445a4479ce35d118c033d22762351ea96a0ad7c74eacf1"},
-]
 mccabe = [
     {file = "mccabe-0.7.0-py2.py3-none-any.whl", hash = "sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e"},
     {file = "mccabe-0.7.0.tar.gz", hash = "sha256:348e0240c33b60bbdf4e523192ef919f28cb2c3d7d5c7794f74009290f236325"},
@@ -515,10 +454,6 @@ pyyaml = [
     {file = "PyYAML-6.0-cp39-cp39-win_amd64.whl", hash = "sha256:b3d267842bf12586ba6c734f89d1f5b871df0273157918b0ccefa29deb05c21c"},
     {file = "PyYAML-6.0.tar.gz", hash = "sha256:68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2"},
 ]
-"ruamel.yaml" = [
-    {file = "ruamel.yaml-0.16.13-py2.py3-none-any.whl", hash = "sha256:64b06e7873eb8e1125525ecef7345447d786368cadca92a7cd9b59eae62e95a3"},
-    {file = "ruamel.yaml-0.16.13.tar.gz", hash = "sha256:bb48c514222702878759a05af96f4b7ecdba9b33cd4efcf25c86b882cef3a942"},
-]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
     {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
@@ -526,12 +461,4 @@ toml = [
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
-]
-yamkix = [
-    {file = "yamkix-0.9.0-py2.py3-none-any.whl", hash = "sha256:370a90d63a366427555d1a48b32109bbbb824e550821d6b7ad9d98fce6f3c578"},
-    {file = "yamkix-0.9.0.tar.gz", hash = "sha256:b9569a5b1fb5415c0ef04e8eba7c9a61a8e2aa7a50b5ec42d6b22b08b25c3a86"},
-]
-yaml2jsonnet = [
-    {file = "yaml2jsonnet-1.0.1-py3-none-any.whl", hash = "sha256:7af7ae431543a837600e8e21fbc8740ea3011ab1c8c543282e61142f9790255b"},
-    {file = "yaml2jsonnet-1.0.1.tar.gz", hash = "sha256:3f77ec9f3a8bad6dd8513cb8fda7cc312998229bb80623ee75cb6140730726cc"},
 ]
