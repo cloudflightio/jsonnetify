@@ -1,75 +1,35 @@
 import argparse
+import json
 import sys
 from typing import Optional, Tuple
 from urllib import request
-import _jsonnet
-import pathlib
-from yaml2jsonnet.yaml2jsonnet import convert_yaml
-from kubesplit.kubesplit import split_input_to_files
-from kubesplit.config import KubesplitConfig, KubesplitIOConfig
-from yamkix.config import get_default_yamkix_config
-from tempfile import TemporaryDirectory
-import os
-import logging
+import yaml
+
+
+def load_manifest(f):
+    docs = yaml.safe_load_all(f)
+    return {
+        "-".join([doc["kind"], doc["metadata"]["name"]]).lower().replace(":", "-"): doc
+        for doc in docs
+    }
 
 
 def convert_manifest(inputfile: str, outputfile: str, tempdir: Optional[str] = None):
-    if not tempdir:
-        tempdirobj = TemporaryDirectory("jsonnetify")
-        tempdir = tempdirobj.name
-
-    manifest_file_path = os.path.join(tempdir, "manifest.yaml")
-    output_path = os.path.join(tempdir, "out")
-
     if inputfile.startswith(("http://", "https://")):
-        request.urlretrieve(inputfile, manifest_file_path)
+        (dl_file_path, _) = request.urlretrieve(inputfile)
+        with open(dl_file_path, "r") as f:
+            combined_manifest = load_manifest(f)
     elif inputfile == "-":
-        with open(manifest_file_path, "w") as f:
-            f.write(sys.stdin.read())
+        combined_manifest = load_manifest(sys.stdin)
     else:
-        with open(inputfile, "r") as fi:
-            with open(manifest_file_path, "w") as fo:
-                fo.write(fi.read())
-
-    if not os.path.exists(output_path):
-        os.mkdir(output_path)
-
-    ksConfig = KubesplitConfig(
-        clean_output_dir=False,
-        prefix_resource_files=False,
-        version=False,
-        io_config=KubesplitIOConfig(
-            input=manifest_file_path,
-            input_display_name="manifest.yaml",
-            output_dir=output_path,
-        ),
-        yamkix_config=get_default_yamkix_config(),
-    )
-    split_input_to_files(ksConfig)
-
-    for (path, _, files) in os.walk(output_path):
-        for file in files:
-            file_path_in = os.path.join(path, file)
-            file_path_out = os.path.join(path, os.path.splitext(file)[0] + ".jsonnet")
-            logging.info("processing " + file)
-            with open(file_path_in, "r") as fi:
-                with open(file_path_out, "w") as fo:
-                    convert_yaml(fi.read(), fo, array=False, inject_comments=False)
-
-    jsonnet_str = "{\n"
-    for path in pathlib.Path(output_path).rglob("*.jsonnet"):
-        key = os.path.splitext(os.path.basename(path))[0].replace("--", "-")
-        file = str(path.absolute().resolve())
-        jsonnet_str += f'  "{key}": import "{file}",\n'
-    jsonnet_str += "}\n"
-
-    json_str = _jsonnet.evaluate_snippet("snippet", jsonnet_str)
+        with open(inputfile, "r") as f:
+            combined_manifest = load_manifest(f)
 
     if outputfile == "-":
-        sys.stdout.write(json_str)
+        json.dump(combined_manifest, sys.stdout, indent=4, sort_keys=True)
     else:
         with open(outputfile, "w") as f:
-            f.write(json_str)
+            json.dump(combined_manifest, f, indent=4, sort_keys=True)
 
 
 def cli(argv=None) -> Tuple[str, str, Optional[str]]:
@@ -104,7 +64,7 @@ def cli(argv=None) -> Tuple[str, str, Optional[str]]:
     return (inputfile, outputfile, tempdir)
 
 
-def main(argv=None):
+def main(argv=None):  # pragma: no cover
     if not argv:
         argv = sys.argv[1:]
 
