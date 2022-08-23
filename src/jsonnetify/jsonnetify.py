@@ -67,13 +67,11 @@ def convert_manifest(
 
     json_str = _jsonnet.evaluate_snippet("snippet", jsonnet_str)
 
-    if isinstance(outputfile, str):
+    if outputfile == "-":
+        sys.stdout.write(json_str)
+    else:
         with open(outputfile, "w") as f:
             f.write(json_str)
-    elif isinstance(outputfile, TextIO):
-        outputfile.write(json_str)
-    else:
-        raise Exception("invalid outputfile!")
 
 
 def cli(argv=None) -> Tuple[str,str,Optional[str]]:
