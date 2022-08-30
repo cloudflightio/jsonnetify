@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim as base
+FROM docker.io/debian:bullseye-slim as base
 
 ENV \
     POETRY_VERSION=1.1.15 \
@@ -58,7 +58,7 @@ RUN ldd jsonnetify | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp --no-clob
 
 RUN upx -9 jsonnetify
 
-FROM scratch 
+FROM gcr.io/distroless/static
 
 COPY --from=compressor /var/app/jsonnetify.dist/ /
 
